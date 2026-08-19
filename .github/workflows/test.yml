@@ -104,6 +104,8 @@ jobs:
         run: terraform plan -out=tfplan
 
       - name: Terraform Apply or Destroy
+        env:
+          INPUT_ACTION: ${{ github.event.inputs.action }}
         run: |
           # Auto apply when push happens
           if [ "${{ github.event_name }}" == "push" ]; then
@@ -111,7 +113,7 @@ jobs:
             terraform apply -auto-approve tfplan
           else
             # Manual workflow for destroy
-            if [ "${{ github.event.inputs.action }}" == "destroy" ]; then
+            if [ "$INPUT_ACTION" == "destroy" ]; then
               echo "Manual destroy triggered..."
               terraform destroy -auto-approve
             else
